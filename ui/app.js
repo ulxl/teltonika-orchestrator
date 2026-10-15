@@ -1,5 +1,6 @@
 let eventSource = null;
 let currentTemplates = [];
+let currentStandardPasswords = ['qwerty123', 'qwerty123!'];
 let editingTemplateName = null;
 let allTargetIps = [];
 let executionStartTime = null;
@@ -139,6 +140,20 @@ function openSettingsModal() {
     if (modal) modal.style.display = 'flex';
     const status = document.getElementById('settingsSaveStatus');
     if (status) status.style.display = 'none';
+    const stdInput = document.getElementById('settingsStandardPasswords');
+    if (stdInput && currentStandardPasswords.length > 0) {
+        stdInput.value = currentStandardPasswords.join(', ');
+    }
+}
+
+function changeStandardPasswords(val) {
+    if (val && val.trim()) {
+        const parsed = val.split(',').map(s => s.trim()).filter(Boolean);
+        if (parsed.length > 0) {
+            currentStandardPasswords = parsed;
+        }
+    }
+    saveCurrentConfig();
 }
 
 async function closeSettingsModal() {
@@ -295,6 +310,16 @@ async function saveCurrentConfig() {
         localStorage.setItem('teltonika_default_ssh_port', sshPort);
     } catch (_) {}
 
+    const stdInput = document.getElementById('settingsStandardPasswords');
+    let stdPwds = currentStandardPasswords;
+    if (stdInput && stdInput.value.trim()) {
+        const parsed = stdInput.value.split(',').map(s => s.trim()).filter(Boolean);
+        if (parsed.length > 0) {
+            stdPwds = parsed;
+            currentStandardPasswords = parsed;
+        }
+    }
+
     try {
         await fetch('/api/templates', {
             method: 'POST',
@@ -302,7 +327,7 @@ async function saveCurrentConfig() {
             body: JSON.stringify({
                 templates: currentTemplates,
                 active_template: document.getElementById('passwordTemplateSelect') ? document.getElementById('passwordTemplateSelect').value : '',
-                standard_passwords: ["qwerty123", "qwerty123!"],
+                standard_passwords: stdPwds,
                 workspace_dir: wsDir,
                 theme: theme,
                 font_family: fontFamily,
@@ -725,6 +750,11 @@ async function loadTemplates() {
                 const el = document.getElementById('settingsSshPort');
                 if (el) el.value = data.default_ssh_port;
                 try { localStorage.setItem('teltonika_default_ssh_port', data.default_ssh_port); } catch (_) {}
+            }
+            if (data.standard_passwords && Array.isArray(data.standard_passwords) && data.standard_passwords.length > 0) {
+                currentStandardPasswords = data.standard_passwords;
+                const stdInput = document.getElementById('settingsStandardPasswords');
+                if (stdInput) stdInput.value = currentStandardPasswords.join(', ');
             }
             const isAP = document.getElementById('tabAP').classList.contains('active');
             const portInput = document.getElementById('port');

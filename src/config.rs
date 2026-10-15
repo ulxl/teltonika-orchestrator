@@ -12,6 +12,7 @@ pub struct PasswordTemplate {
 pub struct AppConfig {
     pub active_template: String,
     pub templates: Vec<PasswordTemplate>,
+    #[serde(default = "default_standard_passwords")]
     pub standard_passwords: Vec<String>,
     #[serde(default = "default_results_dir")]
     pub results_dir: String,
@@ -68,6 +69,10 @@ fn default_port_443() -> u16 {
 
 fn default_port_22() -> u16 {
     22
+}
+
+fn default_standard_passwords() -> Vec<String> {
+    vec!["qwerty123".to_string(), "qwerty123!".to_string()]
 }
 
 impl Default for AppConfig {
@@ -217,5 +222,12 @@ mod tests {
 
         let _ = std::fs::remove_dir_all(&temp_dir);
         let _ = std::fs::remove_file(&appdata_file);
+    }
+
+    #[test]
+    fn test_standard_passwords_default() {
+        let json_str = r#"{"active_template":"Default","templates":[]}"#;
+        let cfg: AppConfig = serde_json::from_str(json_str).unwrap();
+        assert_eq!(cfg.standard_passwords, vec!["qwerty123", "qwerty123!"]);
     }
 }
