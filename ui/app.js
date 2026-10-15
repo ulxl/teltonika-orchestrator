@@ -302,7 +302,7 @@ async function saveCurrentConfig() {
             body: JSON.stringify({
                 templates: currentTemplates,
                 active_template: document.getElementById('passwordTemplateSelect') ? document.getElementById('passwordTemplateSelect').value : '',
-                standard_passwords: ["Admin123!", "Admin123"],
+                standard_passwords: ["qwerty123", "qwerty123!"],
                 workspace_dir: wsDir,
                 theme: theme,
                 font_family: fontFamily,
@@ -1948,20 +1948,20 @@ function exportRmsCsv() {
         if (action === 'extract_data') {
             sn = cells[4] || '';
             mac = cells[5] || '';
-            pwd = document.getElementById('passwords').value.split(',')[0].trim() || 'Admin123!';
+            pwd = document.getElementById('passwords').value.split(',')[0].trim() || 'qwerty123';
         } else if (action === 'extract_data_ap') {
             sn = cells[4] || '';
             mac = cells[5] || '';
-            pwd = document.getElementById('passwords').value.split(',')[0].trim() || 'Admin123!';
+            pwd = document.getElementById('passwords').value.split(',')[0].trim() || 'qwerty123';
         } else if (action === 'bundle_check') {
             sn = cells[3] || '';
             mac = cells[4] || '';
             pwd = cells[5] || '';
         } else if (action === 'check_wifi' || action === 'add_mac') {
             mac = cells[3] || '';
-            pwd = document.getElementById('passwords').value.split(',')[0].trim() || 'Admin123!';
+            pwd = document.getElementById('passwords').value.split(',')[0].trim() || 'qwerty123';
         } else {
-            pwd = cells[3] || document.getElementById('passwords').value.split(',')[0].trim() || 'Admin123!';
+            pwd = cells[3] || document.getElementById('passwords').value.split(',')[0].trim() || 'qwerty123';
         }
 
         const cleanMac = mac.replace(/[\n\r]+/g, ' ').split(' ')[0].trim();

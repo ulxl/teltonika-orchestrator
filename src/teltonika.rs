@@ -655,7 +655,7 @@ pub async fn execute_device_task(
         let target_standard_pwd = if !params.standard_passwords.is_empty() {
             params.standard_passwords[0].clone()
         } else {
-            "Admin123!".to_string()
+            "qwerty123".to_string()
         };
 
         if params.standard_passwords.contains(&active_pwd) {

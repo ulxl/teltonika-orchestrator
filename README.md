@@ -86,7 +86,7 @@ The application includes an in-place updater powered by GitHub Releases:
 ## Configuration & Credentials
 
 All configuration and custom templates are stored locally in the workspace directory under `config/templates.json`:
-- **Default Authentication Candidates**: `Admin123!`, `Admin123`.
+- **Default Authentication Candidates**: `qwerty123`, `qwerty123!`.
 - **Default Ports**: `443` (Router & AP HTTPS), `22` (SSH / SCP). Fully customizable in the Settings modal.
 - Passwords and device IP inputs are stored locally on your machine and never transmitted to external services.
 

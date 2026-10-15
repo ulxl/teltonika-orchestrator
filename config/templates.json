@@ -4,14 +4,14 @@
     {
       "name": "Default",
       "passwords": [
-        "Admin123!",
-        "Admin123"
+        "qwerty123",
+        "qwerty123!"
       ]
     }
   ],
   "standard_passwords": [
-    "Admin123!",
-    "Admin123"
+    "qwerty123",
+    "qwerty123!"
   ],
   "results_dir": "results",
   "workspace_dir": "",

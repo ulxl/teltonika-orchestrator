@@ -78,12 +78,12 @@ impl Default for AppConfig {
                 PasswordTemplate {
                     name: "Default".to_string(),
                     passwords: vec![
-                        "Admin123!".to_string(),
-                        "Admin123".to_string(),
+                        "qwerty123".to_string(),
+                        "qwerty123!".to_string(),
                     ],
                 },
             ],
-            standard_passwords: vec!["Admin123!".to_string(), "Admin123".to_string()],
+            standard_passwords: vec!["qwerty123".to_string(), "qwerty123!".to_string()],
             results_dir: "results".to_string(),
             workspace_dir: String::new(),
             theme: "system".to_string(),
