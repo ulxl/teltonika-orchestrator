@@ -1,0 +1,24 @@
+{
+  "active_template": "Default",
+  "templates": [
+    {
+      "name": "Default",
+      "passwords": [
+        "Admin123!",
+        "Admin123"
+      ]
+    }
+  ],
+  "standard_passwords": [
+    "Admin123!",
+    "Admin123"
+  ],
+  "results_dir": "results",
+  "workspace_dir": "",
+  "theme": "system",
+  "font_size": "normal",
+  "font_family": "geist",
+  "default_workers": 5,
+  "is_first_run": false,
+  "suggested_workspace_dir": ""
+}

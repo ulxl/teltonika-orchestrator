@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teltonika Orchestrator v1.1.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #f8f9fa;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f4f4f6;
+            --border-color: #e5e7eb;
+            --border-focus: #111111;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+            --font-main: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --btn-primary-bg: #111111;
+            --btn-primary-text: #ffffff;
+            --btn-primary-hover: #27272a;
+            --btn-secondary-bg: #ffffff;
+            --btn-secondary-text: #111827;
+            --btn-secondary-border: #e5e7eb;
+            --btn-secondary-hover: #f3f4f6;
+            --badge-success-bg: #f0fdf4;
+            --badge-success-text: #15803d;
+            --badge-success-border: #bbf7d0;
+            --badge-danger-bg: #fef2f2;
+            --badge-danger-text: #b91c1c;
+            --badge-danger-border: #fecaca;
+            --badge-pending-bg: #f3f4f6;
+            --badge-pending-text: #374151;
+            --badge-pending-border: #e5e7eb;
+            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.02);
+            --radius-main: 10px;
+            --radius-sm: 6px;
+            --progress-track: #e5e7eb;
+            --progress-active: #2563eb;
+            --table-row-hover: #fafafa;
+            --table-border: #f0f0f2;
+            --console-bg: #fafafc;
+            --modal-bg: #ffffff;
+            --modal-backdrop: rgba(17, 24, 39, 0.4);
+            --log-divider: rgba(0, 0, 0, 0.06);
+            --font-size-base: 14px;
+            --font-size-sm: 12px;
+            --font-size-xs: 11px;
+            --font-size-lg: 17px;
+            --font-size-xl: 26px;
+            --input-padding: 9px 12px;
+            --btn-padding: 10px 18px;
+            --panel-padding: 22px;
+            --gap-main: 18px;
+            --scrollbar-track: transparent;
+            --scrollbar-thumb: #d1d5db;
+            --scrollbar-thumb-hover: #9ca3af;
+        }
+
+        body.dark-mode {
+            --bg-page: #0d0f12;
+            --bg-surface: #15181e;
+            --bg-subtle: #1c2028;
+            --border-color: #272b35;
+            --border-focus: #e5e7eb;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --btn-primary-bg: #f3f4f6;
+            --btn-primary-text: #0d0f12;
+            --btn-primary-hover: #ffffff;
+            --btn-secondary-bg: #1c2028;
+            --btn-secondary-text: #f3f4f6;
+            --btn-secondary-border: #272b35;
+            --btn-secondary-hover: #232732;
+            --badge-success-bg: rgba(22, 101, 52, 0.25);
+            --badge-success-text: #4ade80;
+            --badge-success-border: #166534;
+            --badge-danger-bg: rgba(185, 28, 28, 0.25);
+            --badge-danger-text: #f87171;
+            --badge-danger-border: #991b1b;
+            --badge-pending-bg: #1c2028;
+            --badge-pending-text: #9ca3af;
+            --badge-pending-border: #272b35;
+            --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.35);
+            --progress-track: #232732;
+            --progress-active: #3b82f6;
+            --table-row-hover: #1c2028;
+            --table-border: #20242e;
+            --console-bg: #0d0f12;
+            --modal-bg: #15181e;
+            --modal-backdrop: rgba(0, 0, 0, 0.7);
+            --log-divider: rgba(255, 255, 255, 0.04);
+            --scrollbar-track: transparent;
+            --scrollbar-thumb: #374151;
+            --scrollbar-thumb-hover: #4b5563;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 999px;
+            transition: background-color 0.15s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: -0.015em;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .dashboard-wrapper {
+            width: 100%;
+            max-width: 1480px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-main);
+            height: 100vh;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-brand {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            color: var(--text-primary);
+        }
+
+        .accent-serif {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-left: 2px;
+        }
+
+        .header-sub {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            width: 44px;
+            height: 24px;
+            padding: 2px;
+            background: #cbd5e1;
+            border: 1px solid #94a3b8;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            box-sizing: border-box;
+            outline: none;
+            user-select: none;
+        }
+
+        .theme-switch:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .theme-switch:focus-visible {
+            box-shadow: 0 0 0 2px var(--border-focus);
+        }
+
+        body.dark-mode .theme-switch {
+            background: #2563eb;
+            border-color: #3b82f6;
+        }
+
+        .theme-switch-thumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(0);
+        }
+
+        body.dark-mode .theme-switch-thumb {
+            transform: translateX(20px);
+        }
+
+        .thumb-icon-sun {
+            color: #d97706;
+            display: block;
+        }
+
+        .thumb-icon-moon {
+            color: #2563eb;
+            display: none;
+        }
+
+        body.dark-mode .thumb-icon-sun {
+            display: none;
+        }
+
+        body.dark-mode .thumb-icon-moon {
+            display: block;
+        }
+
+        .header-btn, .theme-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            font-family: var(--font-main);
+        }
+
+        .header-btn:hover, .theme-toggle-btn:hover {
+            background: var(--bg-subtle);
+            border-color: var(--border-focus);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            color: var(--text-primary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #10b981;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .status-dot.running {
+            background-color: #3b82f6;
+            animation: pulse-dot 1.2s infinite ease-in-out;
+        }
+
+        .status-dot.cancelling {
+            background-color: #f59e0b;
+            animation: pulse-dot 0.8s infinite ease-in-out;
+        }
+
+        .status-dot.offline {
+            background-color: #ef4444;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.35;
+                transform: scale(1.3);
+            }
+        }
+
+        .ui-icon {
+            display: inline-block;
+            vertical-align: -2px;
+            flex-shrink: 0;
+        }
+
+        .modal-close-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 6px;
+            line-height: 1;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .header-title-group .version-badge {
+            transform: translateY(3px);
+        }
+
+        body.font-compact {
+            --font-size-base: 12.5px;
+            --font-size-sm: 11px;
+            --font-size-xs: 10px;
+            --font-size-lg: 15px;
+            --font-size-xl: 22px;
+            --input-padding: 7px 10px;
+            --btn-padding: 8px 14px;
+            --panel-padding: 20px;
+            --gap-main: 18px;
+        }
+
+        body.font-compact .header-brand {
+            font-size: 23px;
+        }
+
+        body.font-compact .header-title-group .version-badge {
+            transform: translateY(2px);
+        }
+
+        body.font-compact .header-bar {
+            padding-bottom: 14px;
+        }
+
+        body.font-compact textarea {
+            min-height: 80px;
+        }
+
+        body.font-compact .form-group {
+            margin-bottom: 13px;
+            gap: 5px;
+        }
+
+        body.font-compact .panel-title {
+            margin-bottom: 14px;
+        }
+
+        body.font-compact .tab-bar {
+            margin-bottom: 14px;
+            padding: 3px;
+        }
+
+        body.font-compact .stat-card {
+            padding: 10px 14px;
+        }
+
+        body.font-compact .results-table th, body.font-compact .results-table td {
+            padding: 7px 10px;
+        }
+
+        body.font-compact .action-footer {
+            margin-top: 12px;
+        }
+
+        body.font-large {
+            --font-size-base: 15.5px;
+            --font-size-sm: 13.5px;
+            --font-size-xs: 12px;
+            --font-size-lg: 19px;
+            --font-size-xl: 30px;
+            --input-padding: 11px 14px;
+            --btn-padding: 12px 20px;
+            --panel-padding: 30px;
+            --gap-main: 28px;
+        }
+
+        body.font-large .header-brand {
+            font-size: 29px;
+        }
+
+        body.font-large .header-title-group .version-badge {
+            transform: translateY(4px);
+        }
+
+        body.font-large textarea {
+            min-height: 120px;
+        }
+
+        body.font-large .form-group {
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+
+        body.font-large .stat-card {
+            padding: 16px 20px;
+        }
+
+        body.font-large .results-table th, body.font-large .results-table td {
+            padding: 12px 16px;
+        }
+
+        body.font-family-geist {
+            --font-main: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        body.font-family-inter {
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        body.font-family-jakarta {
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        body.font-family-system {
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 24px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-main);
+            padding: var(--panel-padding);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-subtle);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .panel-title {
+            font-size: var(--font-size-lg);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tab-bar {
+            display: flex;
+            background: var(--bg-subtle);
+            border-radius: 8px;
+            padding: 4px;
+            gap: 4px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-weight: 800;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+
+        .form-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        .ip-badge-counter {
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            font-weight: 700;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+            font-family: var(--font-main);
+            transition: opacity 0.15s ease;
+        }
+
+        .btn-link:hover {
+            opacity: 0.7;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: var(--input-padding);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            user-select: text;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 1px var(--border-focus);
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+            font-family: var(--font-mono);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .user-group {
+            flex: 0 0 85px;
+            min-width: 0;
+        }
+
+        .port-group {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .worker-group {
+            flex: 0 0 85px;
+            min-width: 0;
+            margin-left: auto;
+        }
+
+        .btn {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border: 1px solid var(--btn-primary-bg);
+            border-radius: var(--radius-sm);
+            padding: var(--btn-padding);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:focus, .btn:focus, .tab-btn:focus, .theme-toggle-btn:focus {
+            outline: none;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--border-focus);
+            outline-offset: 1px;
+        }
+
+        .btn:hover {
+            background: var(--btn-primary-hover);
+            border-color: var(--btn-primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.99);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--btn-secondary-text);
+            border: 1px solid var(--btn-secondary-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--btn-secondary-hover);
+            border-color: var(--border-focus);
+        }
+
+        .log-filter-btn.active {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border-color: var(--btn-primary-bg);
+        }
+
+        .btn-danger {
+            background: var(--bg-surface);
+            color: #ef4444;
+            border: 1px solid #f87171;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #dc2626;
+        }
+
+        .btn-warning {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-warning:hover {
+            background: var(--bg-subtle);
+            border-color: var(--border-focus);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            border-radius: 5px;
+        }
+
+        .stats-summary-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-focus);
+        }
+
+        .stat-card.active-filter {
+            border-color: var(--text-primary);
+            background: var(--bg-subtle);
+        }
+
+        .stat-title {
+            font-size: var(--font-size-xs);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        .stat-val {
+            font-size: var(--font-size-xl);
+            font-weight: 800;
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            letter-spacing: -0.04em;
+        }
+
+        .results-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow-y: auto;
+            overflow-x: auto;
+            flex: 1;
+            min-height: 460px;
+        }
+
+        .results-table {
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            table-layout: fixed;
+        }
+
+        .results-table th, .results-table td {
+            padding: 8px 6px;
+            text-align: left;
+            border-bottom: 1px solid var(--table-border);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+        }
+
+        .results-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg-subtle);
+            font-weight: 800;
+            font-size: var(--font-size-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            z-index: 2;
+            user-select: none;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .th-text {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .results-table th:last-child {
+            border-right: none;
+        }
+
+        .col-resizer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 100%;
+            cursor: col-resize;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .col-resizer:hover, .col-resizer.resizing {
+            background-color: var(--accent-primary);
+            opacity: 0.85;
+        }
+
+        .results-table tbody tr:hover {
+            background: var(--table-row-hover);
+        }
+
+        .copyable {
+            cursor: pointer;
+            user-select: text;
+        }
+
+        .copyable:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: var(--badge-success-bg);
+            color: var(--badge-success-text);
+            border: 1px solid var(--badge-success-border);
+        }
+
+        .badge-danger {
+            background: var(--badge-danger-bg);
+            color: var(--badge-danger-text);
+            border: 1px solid var(--badge-danger-border);
+        }
+
+        .badge-pending {
+            background: var(--badge-pending-bg);
+            color: var(--badge-pending-text);
+            border: 1px solid var(--badge-pending-border);
+        }
+
+        .logs-container {
+            background: var(--console-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            line-height: 1.55;
+            color: var(--text-primary);
+            overflow-y: auto;
+            flex: 1;
+            min-height: 460px;
+            display: none;
+            user-select: text;
+        }
+
+        .progress-box {
+            position: relative;
+            background: var(--progress-track);
+            border-radius: 999px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 14px;
+            display: none;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            transform: translateZ(0);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--progress-active);
+            border-radius: inherit;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+        }
+
+        .action-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            align-items: center;
+        }
+
+        .file-dropzone {
+            border: 1px dashed var(--border-color);
+            background: var(--bg-subtle);
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease;
+            display: none;
+            margin-bottom: 18px;
+            margin-top: 4px;
+        }
+
+        .log-line {
+            padding: 3px 0;
+            border-bottom: 1px solid var(--log-divider);
+        }
+
+        .file-dropzone:hover {
+            border-color: var(--border-focus);
+            background: var(--bg-surface);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-backdrop);
+            backdrop-filter: blur(2px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--modal-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 520px;
+            max-width: calc(100vw - 32px);
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            padding: var(--panel-padding);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: var(--font-size-lg);
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+        }
+
+        .template-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .template-item {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .template-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .template-item-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .template-item-pwds {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            word-break: break-all;
+        }
+
+        .spinner-lg {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--progress-active);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner-sm {
+            width: 13px;
+            height: 13px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1100px) {
+            .layout-grid {
+                grid-template-columns: 360px 1fr;
+                gap: 16px;
+            }
+            .dashboard-wrapper {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-wrapper {
+                height: auto;
+                min-height: 100vh;
+            }
+        }
+
+        @media (max-height: 800px) {
+            .dashboard-wrapper {
+                padding: 16px;
+                gap: 16px;
+            }
+            .header-bar {
+                padding-bottom: 12px;
+            }
+            .stats-summary-bar {
+                margin-bottom: 12px;
+            }
+            .form-group {
+                margin-bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <div class="header-bar">
+            <div class="header-title-group">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="header-brand">Teltonika <span class="accent-serif">Orchestrator</span></div>
+                    <span class="version-badge">v1.1.0</span>
+                </div>
+                <div class="header-sub">Native Automation Suite</div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="theme-switch" id="themeToggleBtn" onclick="toggleTheme()" role="switch" aria-checked="false" title="Toggle Theme">
+                    <span class="theme-switch-thumb">
+                        <svg class="thumb-icon-sun" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <svg class="thumb-icon-moon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </span>
+                </button>
+                <button type="button" class="header-btn" id="settingsBtn" onclick="openSettingsModal()" title="Preferences & Settings">
+                    <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span>Settings</span>
+                </button>
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span id="connectionStatus">Engine Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="layout-grid">
+            <div class="panel">
+                <div class="panel-title">Configuration</div>
+
+                <div class="tab-bar">
+                    <button class="tab-btn active" id="tabGeneral" onclick="switchCategory('general')">General</button>
+                    <button class="tab-btn" id="tabRouter" onclick="switchCategory('router')">Router</button>
+                    <button class="tab-btn" id="tabAP" onclick="switchCategory('ap')">Access Point</button>
+                </div>
+
+                <input type="hidden" id="deviceType" value="router">
+
+                <div class="form-group">
+                    <label>Action</label>
+                    <select id="action" onchange="onActionChange()">
+                        <option value="verify" class="opt-general">Verify Admin Password</option>
+                        <option value="standardize" class="opt-general">Standardize Admin Password</option>
+                        <option value="backup_config" class="opt-general">Backup Configuration (.tar.gz)</option>
+                        <option value="restore_config" class="opt-general">Restore Configuration (.tar.gz)</option>
+                        <option value="update_firmware" class="opt-general">Update Firmware (.bin)</option>
+                        <option value="reconnect_rms" class="opt-general">Reconnect RMS (Single Port)</option>
+                        <option value="reconnect_rms_bundle" class="opt-general">Reconnect RMS (Bundle: 6443, 8443, 9443)</option>
+                        <option value="bundle_check" class="opt-general">Check Info (Bundle: 6443, 8443, 9443)</option>
+                        <option value="clear_arp" class="opt-router" style="display:none;">Clear ARP Cache (UBUS)</option>
+                        <option value="extract_data" class="opt-router" style="display:none;">Extract Device & Modem Data</option>
+                        <option value="check_wifi" class="opt-ap" style="display:none;">Check SSID & Password</option>
+                        <option value="add_mac" class="opt-ap" style="display:none;">Add MAC to Whitelist</option>
+                        <option value="extract_data_ap" class="opt-ap" style="display:none;">Extract Access Point Data</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label-row">
+                        <label>IP Address</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="ipCounter" class="ip-badge-counter">0 valid</span>
+                            <button type="button" class="btn-link" onclick="pasteAndCleanIps()">Paste & Clean</button>
+                        </div>
+                    </div>
+                    <textarea id="ips" spellcheck="false" placeholder="Enter IP or Hostname per line..." oninput="updateIpStats()">192.168.1.1</textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label-row">
+                        <label>Password Template</label>
+                        <button type="button" class="btn-link" onclick="openTemplateModal()">Manage</button>
+                    </div>
+                    <select id="passwordTemplateSelect" onchange="onTemplateSelect(); saveCurrentConfig();"></select>
+                    <input type="hidden" id="passwords">
+                </div>
+
+                <div class="form-group" id="macGroup" style="display: none;">
+                    <label>MAC Addresses (One per line)</label>
+                    <textarea id="macInput" spellcheck="false" placeholder="AA:BB:CC:DD:EE:FF" style="min-height: 70px;"></textarea>
+                </div>
+
+                <div class="file-dropzone" id="firmwareDropzone" onclick="document.getElementById('firmwareFileInput').click()">
+                    <input type="file" id="firmwareFileInput" accept=".bin" style="display: none;" onchange="onFirmwareFileSelected(this)">
+                    <div id="firmwareFileLabel">Drag & drop firmware (.bin) file here or click to browse</div>
+                </div>
+
+                <div class="file-dropzone" id="backupDropzone" onclick="document.getElementById('backupFileInput').click()">
+                    <input type="file" id="backupFileInput" accept=".tar.gz,.gz,.zip" style="display: none;" onchange="onBackupFileSelected(this)">
+                    <div id="backupFileLabel">Drag & drop backup (.tar.gz) file here or click to browse</div>
+                </div>
+
+                <div class="flex-row">
+                    <div class="form-group user-group">
+                        <label>User</label>
+                        <input type="text" id="username" value="admin" spellcheck="false">
+                    </div>
+                    <div class="form-group port-group" id="portGroup">
+                        <label id="portLabel">Port</label>
+                        <input type="number" id="port" value="8443" min="1" max="65535">
+                    </div>
+                    <div class="form-group worker-group">
+                        <label>Workers</label>
+                        <input type="number" id="workers" value="5" min="1" max="50">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 8px;">
+                    <button class="btn" id="runBtn" onclick="executeSequence()" style="width: 100%;">Execute Sequence</button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="cancelSequence()" style="width: 100%; display: none;">Cancel Operation</button>
+                </div>
+
+                <div class="progress-box" id="progressBox">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <span>Execution Status</span>
+                    <div class="tab-bar" style="margin-bottom: 0;">
+                        <button class="tab-btn active" id="tabResultsBtn" onclick="switchOutputTab('results')">Table</button>
+                        <button class="tab-btn" id="tabLogsBtn" onclick="switchOutputTab('logs')">Logs</button>
+                    </div>
+                </div>
+
+                <div class="stats-summary-bar">
+                    <div class="stat-card" id="cardTotal" onclick="filterResults('all')">
+                        <span class="stat-title">Total IPs</span>
+                        <span class="stat-val" id="valTotal">0</span>
+                    </div>
+                    <div class="stat-card" id="cardSuccess" onclick="filterResults('success')">
+                        <span class="stat-title">Success</span>
+                        <span class="stat-val" id="valSuccess" style="color: #16a34a;">0</span>
+                    </div>
+                    <div class="stat-card" id="cardFailed" onclick="filterResults('failed')">
+                        <span class="stat-title">Failed</span>
+                        <span class="stat-val" id="valFailed" style="color: #dc2626;">0</span>
+                    </div>
+                    <div class="stat-card" id="cardDuration">
+                        <span class="stat-title">Duration</span>
+                        <span class="stat-val" id="valDuration">0.0s</span>
+                    </div>
+                </div>
+
+                <div class="results-container" id="resultsContainer">
+                    <table id="resultsTable" class="results-table">
+                        <thead>
+                            <tr id="resultsHeader">
+                                <th style="width: 40px;">#</th>
+                                <th>IP Address</th>
+                                <th style="width: 90px;">Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 48px;">Ready. Configure settings and click Execute Sequence.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="console-toolbar" id="consoleToolbar" style="display: none; margin-bottom: 10px; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 4px;">
+                        <button type="button" class="btn btn-secondary btn-sm log-filter-btn active" data-filter="all" onclick="setLogFilter('all')">All</button>
+                        <button type="button" class="btn btn-secondary btn-sm log-filter-btn" data-filter="error" onclick="setLogFilter('error')">Errors</button>
+                        <button type="button" class="btn btn-secondary btn-sm log-filter-btn" data-filter="success" onclick="setLogFilter('success')">Success</button>
+                        <button type="button" class="btn btn-secondary btn-sm log-filter-btn" data-filter="info" onclick="setLogFilter('info')">Info</button>
+                    </div>
+                    <input type="text" id="logSearchInput" placeholder="Filter by IP or keyword..." oninput="applyLogFilter()" style="max-width: 190px; padding: 5px 8px; font-size: 12px;">
+                    <div style="flex: 1;"></div>
+                    <button type="button" class="btn btn-secondary btn-sm" id="autoScrollToggleBtn" onclick="toggleAutoScroll()">Auto-scroll: ON</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="exportLogsToFile()">Export Logs (.txt)</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="clearLogs()">Clear</button>
+                </div>
+
+                <div class="logs-container" id="logsContainer"></div>
+
+                <div class="action-footer">
+                    <button class="btn btn-warning btn-sm" id="retryFailedBtn" style="display: none;" onclick="retryFailedIps()">Retry Failed</button>
+                    <button class="btn btn-secondary btn-sm" id="openExcelBtn" style="display: none;" onclick="openLatestExcel()">Open Excel Result</button>
+                    <button class="btn btn-secondary btn-sm" id="exportRmsBtn" style="display: none;" onclick="exportRmsCsv()">Export for RMS (CSV)</button>
+                    <button class="btn btn-secondary btn-sm" id="openResultsFolderBtn" onclick="openResultsFolder()">Open Results Folder</button>
+                    <div style="flex: 1;"></div>
+                    <span id="exportStatusText" style="font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); font-weight: 600;"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal">
+            <div class="modal-title">
+                <span>Manage Password Templates</span>
+                <button class="btn-sm btn-secondary modal-close-btn" onclick="closeTemplateModal()" aria-label="Close"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="template-list" id="templateList"></div>
+            <div style="border-top: 1px solid var(--border-color); padding-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label id="templateFormTitle">Add New Template</label>
+                    <button type="button" id="cancelEditTemplateBtn" class="btn-link" style="display: none; font-size: 11px;" onclick="cancelTemplateEdit()">Cancel Edit</button>
+                </div>
+                <div class="flex-row">
+                    <input type="text" id="newTemplateName" placeholder="Template Name (e.g. Lab)" style="flex: 1;" onkeydown="if(event.key==='Enter') saveOrUpdateTemplate()">
+                    <input type="text" id="newTemplatePasswords" placeholder="Passwords (comma separated)" style="flex: 2;" onkeydown="if(event.key==='Enter') saveOrUpdateTemplate()">
+                    <button class="btn btn-sm" id="templateSubmitBtn" onclick="saveOrUpdateTemplate()">Add</button>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+                <button class="btn btn-secondary btn-sm" onclick="closeTemplateModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-title">
+                <span>Preferences & Settings</span>
+                <button class="btn-sm btn-secondary modal-close-btn" onclick="closeSettingsModal()" aria-label="Close"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Default Theme</label>
+                    <select id="settingsThemeSelect" onchange="changeDefaultTheme(this.value)">
+                        <option value="system">System Default</option>
+                        <option value="dark">Dark Mode</option>
+                        <option value="light">Light Mode</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>UI Font Family</label>
+                    <select id="settingsFontFamilySelect" onchange="changeFontFamily(this.value)">
+                        <option value="geist">Geist (Modern Sans)</option>
+                        <option value="inter">Inter (Clean)</option>
+                        <option value="jakarta">Plus Jakarta Sans</option>
+                        <option value="system">System Native</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>UI Font Size</label>
+                    <select id="settingsFontSizeSelect" onchange="changeFontSize(this.value)">
+                        <option value="compact">Compact (13px)</option>
+                        <option value="normal">Normal (14px)</option>
+                        <option value="large">Large (15.5px)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Default Worker Threads</label>
+                    <input type="number" id="settingsDefaultWorkers" min="1" max="50" value="5" onchange="changeDefaultWorkers(this.value)">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <div class="form-label-row">
+                        <label>Workspace Directory</label>
+                        <button type="button" class="btn-link" onclick="openWorkspaceFolder()">Open Folder</button>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="settingsWorkspaceDir" placeholder="e.g. C:\Users\Username\Documents\Teltonika" spellcheck="false" onchange="changeWorkspaceDir(this.value)" style="flex: 1; font-family: var(--font-mono); font-size: 12px;">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="browseFolderFor('settingsWorkspaceDir')" title="Browse Folder">Browse</button>
+                        <button type="button" class="btn btn-secondary btn-sm modal-close-btn" onclick="openWorkspaceFolder()" title="Open in File Explorer"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></button>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">Stores /config and /results folders together inside this directory.</div>
+                </div>
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-weight: 800; font-size: 13.5px; color: var(--text-primary);">Teltonika Orchestrator</span>
+                            <span class="version-badge" id="appVersionBadge">v1.1.0</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnCheckUpdate" onclick="checkForAppUpdate(false)" style="font-size: 11px; padding: 2px 10px; height: 26px;">Check for Updates</button>
+                    </div>
+                    <div id="updateStatusBanner" style="display: none; padding: 10px 12px; border-radius: 6px; font-size: 11.5px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); flex-direction: column; gap: 6px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span id="updateBannerText" style="font-weight: 700; color: var(--accent-primary);">New version available!</span>
+                            <button type="button" class="btn btn-primary btn-sm" id="btnInstallUpdate" onclick="installAppUpdate()" style="font-size: 11px; padding: 2px 10px; height: 24px;">Update Now</button>
+                        </div>
+                        <div id="updateNotesText" style="font-size: 11px; color: var(--text-secondary); max-height: 80px; overflow-y: auto; white-space: pre-wrap; line-height: 1.4;"></div>
+                        <div id="updateProgressContainer" style="display: none; flex-direction: column; gap: 4px; margin-top: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600;">
+                                <span id="updateProgressLabel">Downloading...</span>
+                                <span id="updateProgressPercent">0%</span>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden;">
+                                <div id="updateProgressBar" style="width: 0%; height: 100%; background: var(--accent-primary); transition: width 0.2s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+                        Developed by <a href="https://github.com/ulxl" target="_blank" rel="noopener noreferrer" onclick="openExternalUrl(event, 'https://github.com/ulxl')" style="color: var(--accent-primary); text-decoration: underline; font-weight: 700; cursor: pointer;">Hilmy</a><br>
+                        High-Performance Native Automation Engine built with Rust, Tokio, Axum & Wry.
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; align-items: center;">
+                <span id="settingsSaveStatus" style="font-size: 12px; font-weight: 700; color: #16a34a; display: none; margin-right: auto;">Settings saved successfully</span>
+                <button class="btn btn-secondary btn-sm" onclick="closeSettingsModal()">Close</button>
+                <button class="btn btn-sm" onclick="saveSettingsModal()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cancellingOverlay" style="z-index: 2000;">
+        <div class="modal" style="width: 360px; max-width: 90vw; align-items: center; text-align: center; gap: 16px; padding: 32px 24px;">
+            <div class="spinner-lg"></div>
+            <div style="font-size: 16px; font-weight: 800; color: var(--text-primary);">Trying to cancel...</div>
+            <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.4;">
+                Aborting active workers and finalizing sequence. Please wait.
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="firstRunModal" style="display: none; z-index: 10000; background: rgba(0, 0, 0, 0.75);">
+        <div class="modal" style="max-width: 580px; width: 92%;">
+            <div class="modal-title" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <svg class="ui-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    <span style="font-size: 16px; font-weight: 700;">Workspace Setup</span>
+                </div>
+                <span class="version-badge">First Launch</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px;">
+                Welcome to Teltonika Orchestrator! Please select or create a <strong>Workspace Folder</strong>. Both your configuration templates and operation results will be neatly kept together inside this single folder so nothing clutters your Downloads directory.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="font-weight: 700; color: var(--text-primary);">Workspace Folder</label>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 6px;">Select an existing folder or click Browse to choose or create a new folder:</div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="firstRunWorkspaceDir" style="flex: 1; font-family: var(--font-mono); font-size: 12px;" spellcheck="false" placeholder="e.g. C:\Users\Username\Documents\Teltonika">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="browseFolderFor('firstRunWorkspaceDir')">Browse...</button>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Folder Layout</div>
+                    <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-family: var(--font-mono);">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-primary); flex-shrink: 0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                            <span style="color: var(--text-primary);">&lt;Workspace&gt;/config/templates.json</span>
+                            <span style="color: var(--text-muted); font-family: var(--font-sans); font-size: 11.5px; margin-left: auto;">Profiles & Settings</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-primary); flex-shrink: 0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span style="color: var(--text-primary);">&lt;Workspace&gt;/results/</span>
+                            <span style="color: var(--text-muted); font-family: var(--font-sans); font-size: 11.5px; margin-left: auto;">Reports & Backups</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <button type="button" class="btn btn-primary" onclick="submitFirstRunSetup()" style="padding: 8px 18px; font-weight: 700;">
+                    Save Workspace & Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rebootConfirmModal">
+        <div class="modal" style="width: 440px;">
+            <div class="modal-title">
+                <span>Confirm Device Reboot</span>
+                <button class="btn-sm btn-secondary modal-close-btn" onclick="closeRebootConfirmModal()" aria-label="Close"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div style="margin-top: 12px; font-size: 13.5px; color: var(--text-primary); line-height: 1.5;">
+                Are you sure you want to reboot device <strong id="rebootTargetIpDisplay" style="font-family: var(--font-mono); color: var(--accent-primary);"></strong>?
+                <div style="margin-top: 10px; font-size: 12px; color: var(--text-secondary); background: var(--bg-subtle); padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                    The router will restart immediately and temporarily disconnect cellular and LAN connections.
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeRebootConfirmModal()">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmRebootActionBtn" onclick="executeRebootDevice()">Reboot Device</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
