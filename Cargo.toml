@@ -1,5 +1,5 @@
 [package]
-name = "rust-app"
+name = "teltonika-orchestrator"
 version = "1.2.0"
 edition = "2024"
 authors = ["Hilmy <https://github.com/ulxl>"]
@@ -12,7 +12,7 @@ name = "rust_app"
 path = "src/lib.rs"
 
 [[bin]]
-name = "rust-app"
+name = "teltonika-orchestrator"
 path = "src/main.rs"
 
 [dependencies]

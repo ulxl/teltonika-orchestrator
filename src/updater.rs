@@ -74,10 +74,13 @@ pub async fn check_for_updates() -> Result<CheckUpdateResult, String> {
     if let Some(assets) = val.get("assets").and_then(|v| v.as_array()) {
         for asset in assets {
             let name = asset.get("name").and_then(|v| v.as_str()).unwrap_or("");
-            if name == "rust-app.exe" {
+            if name == "teltonika-orchestrator.exe" {
                 download_url = asset.get("browser_download_url").and_then(|v| v.as_str()).unwrap_or("").to_string();
                 asset_size = asset.get("size").and_then(|v| v.as_u64()).unwrap_or(0);
                 break;
+            } else if name == "rust-app.exe" && download_url.is_empty() {
+                download_url = asset.get("browser_download_url").and_then(|v| v.as_str()).unwrap_or("").to_string();
+                asset_size = asset.get("size").and_then(|v| v.as_u64()).unwrap_or(0);
             }
         }
     }

@@ -19,7 +19,7 @@ Teltonika Orchestrator combines the raw performance, concurrency, and memory saf
 - **Embedded Web Server**: Local `axum` micro-server hosting the single-page application interface, REST API endpoints, and real-time Server-Sent Events (SSE) telemetry.
 - **Dual Communication Protocol**: Seamlessly supports both RutOS UBUS JSON-RPC commands and the modern RutOS REST API, automatically detecting endpoint capabilities.
 - **Native File Reports**: Generates professional Excel spreadsheets directly with `rust_xlsxwriter`.
-- **Zero-Dependency Portable Binary**: Compiles to a single standalone `rust-app.exe` executable with embedded assets and in-place GitHub Releases auto-updating.
+- **Zero-Dependency Portable Binary**: Compiles to a single standalone `teltonika-orchestrator.exe` executable with embedded assets and in-place GitHub Releases auto-updating.
 
 ---
 
@@ -54,8 +54,8 @@ Teltonika Orchestrator combines the raw performance, concurrency, and memory saf
 
 ### Option A: Download Pre-Built Executable (Recommended)
 1. Head to the [Latest Releases](https://github.com/ulxl/teltonika-orchestrator/releases/latest) page.
-2. Download `rust-app.exe`.
-3. Run `rust-app.exe` (requires Microsoft Edge WebView2 runtime, pre-installed on Windows 10/11).
+2. Download `teltonika-orchestrator.exe`.
+3. Run `teltonika-orchestrator.exe` (requires Microsoft Edge WebView2 runtime, pre-installed on Windows 10/11).
 
 ### Option B: Build from Source
 Ensure you have the Rust toolchain installed:
@@ -68,7 +68,7 @@ cargo build --release
 
 The optimized executable will be located at:
 ```
-target/release/rust-app.exe
+target/release/teltonika-orchestrator.exe
 ```
 
 ---

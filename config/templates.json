@@ -19,9 +19,9 @@
   "font_size": "normal",
   "font_family": "geist",
   "default_workers": 5,
+  "is_first_run": false,
+  "suggested_workspace_dir": "",
   "default_router_port": 443,
   "default_ap_port": 443,
-  "default_ssh_port": 22,
-  "is_first_run": false,
-  "suggested_workspace_dir": ""
+  "default_ssh_port": 22
 }

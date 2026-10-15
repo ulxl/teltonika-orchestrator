@@ -25,5 +25,5 @@ jobs:
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: target/release/rust-app.exe
+          files: target/release/teltonika-orchestrator.exe
           generate_release_notes: true
