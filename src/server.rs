@@ -2,7 +2,7 @@ use axum::{
     extract::{DefaultBodyLimit, Multipart, Path, State},
     response::{
         sse::{Event, KeepAlive, Sse},
-        Html, Response,
+        Response,
     },
     routing::{get, post},
     Json, Router,
@@ -50,13 +50,22 @@ pub fn create_router(state: AppState) -> Router {
         .with_state(state)
 }
 
-async fn serve_index() -> Html<&'static str> {
-    Html(include_str!("../ui/index.html"))
+async fn serve_index() -> Response {
+    Response::builder()
+        .header("content-type", "text/html; charset=utf-8")
+        .header("cache-control", "no-cache, no-store, must-revalidate")
+        .header("pragma", "no-cache")
+        .header("expires", "0")
+        .body(include_str!("../ui/index.html").into())
+        .unwrap()
 }
 
 async fn serve_js() -> Response {
     Response::builder()
-        .header("content-type", "application/javascript")
+        .header("content-type", "application/javascript; charset=utf-8")
+        .header("cache-control", "no-cache, no-store, must-revalidate")
+        .header("pragma", "no-cache")
+        .header("expires", "0")
         .body(include_str!("../ui/app.js").into())
         .unwrap()
 }
@@ -97,6 +106,7 @@ async fn start_job(
     let mut is_retry = false;
     let mut firmware_path_opt: Option<String> = None;
     let mut backup_path_opt: Option<String> = None;
+    let mut standard_password_override: Option<String> = None;
 
     while let Ok(Some(field)) = multipart.next_field().await {
         let name = field.name().unwrap_or("").to_string();
@@ -137,6 +147,11 @@ async fn start_job(
                 if std::fs::write(&save_path, &bytes).is_ok() {
                     backup_path_opt = Some(save_path);
                 }
+            }
+        } else if name == "standard_password" {
+            let p = field.text().await.unwrap_or_default().trim().to_string();
+            if !p.is_empty() {
+                standard_password_override = Some(p);
             }
         }
     }
@@ -191,9 +206,13 @@ async fn start_job(
         .collect();
 
     let cfg = load_config();
-    let standard_passwords = cfg.standard_passwords.clone();
+    let mut standard_passwords = cfg.standard_passwords.clone();
+    if let Some(target_pwd) = standard_password_override {
+        standard_passwords.retain(|p| p != &target_pwd);
+        standard_passwords.insert(0, target_pwd);
+    }
     if passwords.is_empty() {
-        passwords = cfg.standard_passwords;
+        passwords = standard_passwords.clone();
     }
 
     let mac_addresses: Vec<String> = mac_raw

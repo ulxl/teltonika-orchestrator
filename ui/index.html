@@ -625,6 +625,40 @@
             width: 100%;
         }
 
+        .password-toggle-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .password-toggle-wrapper input {
+            width: 100%;
+            padding-right: 36px;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 5px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            padding: 0;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
         .user-group {
             flex: 0 0 85px;
             min-width: 0;
@@ -1181,6 +1215,19 @@
                     <input type="hidden" id="passwords">
                 </div>
 
+                <div class="form-group" id="standardPasswordGroup" style="display: none;">
+                    <div class="form-label-row">
+                        <label>Target Standard Password</label>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Enforced upon devices</span>
+                    </div>
+                    <div class="password-toggle-wrapper">
+                        <input type="password" id="standardPasswordInput" placeholder="Enter standard password" spellcheck="false" style="font-family: var(--font-mono); font-size: 12.5px;" onchange="onStandardPasswordInputChange(this.value)">
+                        <button type="button" class="password-toggle-btn" id="toggleStandardPasswordBtn" onclick="togglePasswordVisibility('standardPasswordInput', this)" title="Toggle visibility">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="form-group" id="macGroup" style="display: none;">
                     <label>MAC Addresses (One per line)</label>
                     <textarea id="macInput" spellcheck="false" placeholder="AA:BB:CC:DD:EE:FF" style="min-height: 70px;"></textarea>
@@ -1307,9 +1354,14 @@
                     <label id="templateFormTitle">Add New Template</label>
                     <button type="button" id="cancelEditTemplateBtn" class="btn-link" style="display: none; font-size: 11px;" onclick="cancelTemplateEdit()">Cancel Edit</button>
                 </div>
-                <div class="flex-row">
+                <div class="flex-row" style="align-items: center;">
                     <input type="text" id="newTemplateName" placeholder="Template Name (e.g. Lab)" style="flex: 1;" onkeydown="if(event.key==='Enter') saveOrUpdateTemplate()">
-                    <input type="text" id="newTemplatePasswords" placeholder="Passwords (comma separated)" style="flex: 2;" onkeydown="if(event.key==='Enter') saveOrUpdateTemplate()">
+                    <div class="password-toggle-wrapper" style="flex: 2;">
+                        <input type="password" id="newTemplatePasswords" placeholder="Passwords (comma separated)" style="font-family: var(--font-mono); font-size: 12.5px;" onkeydown="if(event.key==='Enter') saveOrUpdateTemplate()">
+                        <button type="button" class="password-toggle-btn" id="toggleNewTemplatePasswordsBtn" onclick="togglePasswordVisibility('newTemplatePasswords', this)" title="Toggle visibility">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
                     <button class="btn btn-sm" id="templateSubmitBtn" onclick="saveOrUpdateTemplate()">Add</button>
                 </div>
             </div>
@@ -1368,11 +1420,6 @@
                         <label>SSH Port</label>
                         <input type="number" id="settingsSshPort" min="1" max="65535" value="22" onchange="changeDefaultPorts()">
                     </div>
-                </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label>Standard Admin Passwords</label>
-                    <input type="text" id="settingsStandardPasswords" placeholder="qwerty123, qwerty123!" spellcheck="false" onchange="changeStandardPasswords(this.value)" style="font-family: var(--font-mono); font-size: 12px;">
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">First entry is the target password set on devices; others are recognized as compliant (comma-separated).</div>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <div class="form-label-row">

@@ -140,20 +140,30 @@ function openSettingsModal() {
     if (modal) modal.style.display = 'flex';
     const status = document.getElementById('settingsSaveStatus');
     if (status) status.style.display = 'none';
-    const stdInput = document.getElementById('settingsStandardPasswords');
-    if (stdInput && currentStandardPasswords.length > 0) {
-        stdInput.value = currentStandardPasswords.join(', ');
+}
+
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const isPass = input.type === 'password';
+    input.type = isPass ? 'text' : 'password';
+    if (btn) {
+        btn.innerHTML = isPass
+            ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+            : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
     }
 }
 
-function changeStandardPasswords(val) {
-    if (val && val.trim()) {
-        const parsed = val.split(',').map(s => s.trim()).filter(Boolean);
-        if (parsed.length > 0) {
-            currentStandardPasswords = parsed;
+function onStandardPasswordInputChange(val) {
+    const trimmed = (val || '').trim();
+    if (trimmed) {
+        if (!currentStandardPasswords || currentStandardPasswords.length === 0) {
+            currentStandardPasswords = [trimmed];
+        } else {
+            currentStandardPasswords[0] = trimmed;
         }
+        saveCurrentConfig();
     }
-    saveCurrentConfig();
 }
 
 async function closeSettingsModal() {
@@ -310,13 +320,13 @@ async function saveCurrentConfig() {
         localStorage.setItem('teltonika_default_ssh_port', sshPort);
     } catch (_) {}
 
-    const stdInput = document.getElementById('settingsStandardPasswords');
-    let stdPwds = currentStandardPasswords;
+    const stdInput = document.getElementById('standardPasswordInput');
     if (stdInput && stdInput.value.trim()) {
-        const parsed = stdInput.value.split(',').map(s => s.trim()).filter(Boolean);
-        if (parsed.length > 0) {
-            stdPwds = parsed;
-            currentStandardPasswords = parsed;
+        const val = stdInput.value.trim();
+        if (!currentStandardPasswords || currentStandardPasswords.length === 0) {
+            currentStandardPasswords = [val];
+        } else {
+            currentStandardPasswords[0] = val;
         }
     }
 
@@ -327,7 +337,7 @@ async function saveCurrentConfig() {
             body: JSON.stringify({
                 templates: currentTemplates,
                 active_template: document.getElementById('passwordTemplateSelect') ? document.getElementById('passwordTemplateSelect').value : '',
-                standard_passwords: stdPwds,
+                standard_passwords: currentStandardPasswords,
                 workspace_dir: wsDir,
                 theme: theme,
                 font_family: fontFamily,
@@ -463,12 +473,29 @@ function onActionChange() {
     }
 
     const isRestore = action === 'restore_config';
+    const isStandardize = action === 'standardize';
 
     document.getElementById('firmwareDropzone').style.display = isFirmware ? 'block' : 'none';
     const backupDropzone = document.getElementById('backupDropzone');
     if (backupDropzone) backupDropzone.style.display = isRestore ? 'block' : 'none';
     document.getElementById('macGroup').style.display = isMac ? 'flex' : 'none';
     document.getElementById('portGroup').style.display = isBundle ? 'none' : 'flex';
+
+    const stdGroup = document.getElementById('standardPasswordGroup');
+    if (stdGroup) {
+        stdGroup.style.display = isStandardize ? 'block' : 'none';
+        const stdInput = document.getElementById('standardPasswordInput');
+        if (stdInput) {
+            stdInput.type = 'password';
+            if (currentStandardPasswords && currentStandardPasswords.length > 0) {
+                stdInput.value = currentStandardPasswords[0];
+            }
+        }
+        const eyeBtn = document.getElementById('toggleStandardPasswordBtn');
+        if (eyeBtn) {
+            eyeBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+        }
+    }
 
     const header = document.getElementById('resultsHeader');
     if (action === 'check_wifi') {
@@ -753,8 +780,8 @@ async function loadTemplates() {
             }
             if (data.standard_passwords && Array.isArray(data.standard_passwords) && data.standard_passwords.length > 0) {
                 currentStandardPasswords = data.standard_passwords;
-                const stdInput = document.getElementById('settingsStandardPasswords');
-                if (stdInput) stdInput.value = currentStandardPasswords.join(', ');
+                const stdInput = document.getElementById('standardPasswordInput');
+                if (stdInput) stdInput.value = currentStandardPasswords[0];
             }
             const isAP = document.getElementById('tabAP').classList.contains('active');
             const portInput = document.getElementById('port');
@@ -820,12 +847,7 @@ function openTemplateModal() {
         nameSpan.className = 'template-item-name';
         nameSpan.textContent = t.name;
 
-        const pwdsSpan = document.createElement('span');
-        pwdsSpan.className = 'template-item-pwds';
-        pwdsSpan.textContent = t.passwords.join(', ');
-
         info.appendChild(nameSpan);
-        info.appendChild(pwdsSpan);
 
         const actions = document.createElement('div');
         actions.style.display = 'flex';
@@ -851,11 +873,23 @@ function openTemplateModal() {
         item.appendChild(actions);
         list.appendChild(item);
     }
+    const pwInput = document.getElementById('newTemplatePasswords');
+    if (pwInput) pwInput.type = 'password';
+    const eyeBtn = document.getElementById('toggleNewTemplatePasswordsBtn');
+    if (eyeBtn) {
+        eyeBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
     document.getElementById('templateModal').style.display = 'flex';
 }
 
 function closeTemplateModal() {
     cancelTemplateEdit();
+    const pwInput = document.getElementById('newTemplatePasswords');
+    if (pwInput) pwInput.type = 'password';
+    const eyeBtn = document.getElementById('toggleNewTemplatePasswordsBtn');
+    if (eyeBtn) {
+        eyeBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
     document.getElementById('templateModal').style.display = 'none';
 }
 
@@ -864,15 +898,22 @@ function editTemplate(name) {
     if (!t) return;
     editingTemplateName = t.name;
     document.getElementById('newTemplateName').value = t.name;
-    document.getElementById('newTemplatePasswords').value = t.passwords.join(', ');
+    const pwInput = document.getElementById('newTemplatePasswords');
+    if (pwInput) {
+        pwInput.value = t.passwords.join(', ');
+        pwInput.type = 'password';
+        pwInput.focus();
+    }
+    const eyeBtn = document.getElementById('toggleNewTemplatePasswordsBtn');
+    if (eyeBtn) {
+        eyeBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
     const title = document.getElementById('templateFormTitle');
     if (title) title.textContent = `Edit Template: ${t.name}`;
     const submitBtn = document.getElementById('templateSubmitBtn');
     if (submitBtn) submitBtn.textContent = 'Save';
     const cancelBtn = document.getElementById('cancelEditTemplateBtn');
     if (cancelBtn) cancelBtn.style.display = 'inline-block';
-    const pwInput = document.getElementById('newTemplatePasswords');
-    if (pwInput) pwInput.focus();
 }
 
 function cancelTemplateEdit() {
@@ -880,7 +921,14 @@ function cancelTemplateEdit() {
     const nameInput = document.getElementById('newTemplateName');
     if (nameInput) nameInput.value = '';
     const pwInput = document.getElementById('newTemplatePasswords');
-    if (pwInput) pwInput.value = '';
+    if (pwInput) {
+        pwInput.value = '';
+        pwInput.type = 'password';
+    }
+    const eyeBtn = document.getElementById('toggleNewTemplatePasswordsBtn');
+    if (eyeBtn) {
+        eyeBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
     const title = document.getElementById('templateFormTitle');
     if (title) title.textContent = 'Add New Template';
     const submitBtn = document.getElementById('templateSubmitBtn');
@@ -925,6 +973,9 @@ async function addNewTemplate() {
 }
 
 async function deleteTemplate(name) {
+    if (!confirm(`Are you sure you want to delete template "${name}"?`)) {
+        return;
+    }
     if (editingTemplateName === name) {
         cancelTemplateEdit();
     }
@@ -1323,6 +1374,13 @@ async function executeSequence(ipsToRun = null) {
     formData.append('port', port);
     formData.append('workers', workers);
     formData.append('is_retry', isRetry ? 'true' : 'false');
+
+    if (action === 'standardize') {
+        const stdInput = document.getElementById('standardPasswordInput');
+        if (stdInput && stdInput.value.trim()) {
+            formData.append('standard_password', stdInput.value.trim());
+        }
+    }
 
     if (action === 'update_firmware' && fileInput.files && fileInput.files[0]) {
         formData.append('firmware_file', fileInput.files[0]);
