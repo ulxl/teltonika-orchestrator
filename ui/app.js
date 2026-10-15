@@ -140,6 +140,11 @@ function openSettingsModal() {
     if (modal) modal.style.display = 'flex';
     const status = document.getElementById('settingsSaveStatus');
     if (status) status.style.display = 'none';
+    const banner = document.getElementById('updateStatusBanner');
+    const installBtn = document.getElementById('btnInstallUpdate');
+    if (banner && installBtn && installBtn.style.display === 'none') {
+        banner.style.display = 'none';
+    }
 }
 
 function togglePasswordVisibility(inputId, btn) {
@@ -155,14 +160,12 @@ function togglePasswordVisibility(inputId, btn) {
 }
 
 function onStandardPasswordInputChange(val) {
-    const trimmed = (val || '').trim();
-    if (trimmed) {
-        if (!currentStandardPasswords || currentStandardPasswords.length === 0) {
-            currentStandardPasswords = [trimmed];
-        } else {
-            currentStandardPasswords[0] = trimmed;
+    if (val && val.trim()) {
+        const parsed = val.split(',').map(s => s.trim()).filter(Boolean);
+        if (parsed.length > 0) {
+            currentStandardPasswords = parsed;
+            saveCurrentConfig();
         }
-        saveCurrentConfig();
     }
 }
 
@@ -170,6 +173,11 @@ async function closeSettingsModal() {
     await saveCurrentConfig();
     const modal = document.getElementById('settingsModal');
     if (modal) modal.style.display = 'none';
+    const banner = document.getElementById('updateStatusBanner');
+    const installBtn = document.getElementById('btnInstallUpdate');
+    if (banner && installBtn && installBtn.style.display === 'none') {
+        banner.style.display = 'none';
+    }
 }
 
 async function saveSettingsModal() {
@@ -322,11 +330,9 @@ async function saveCurrentConfig() {
 
     const stdInput = document.getElementById('standardPasswordInput');
     if (stdInput && stdInput.value.trim()) {
-        const val = stdInput.value.trim();
-        if (!currentStandardPasswords || currentStandardPasswords.length === 0) {
-            currentStandardPasswords = [val];
-        } else {
-            currentStandardPasswords[0] = val;
+        const parsed = stdInput.value.split(',').map(s => s.trim()).filter(Boolean);
+        if (parsed.length > 0) {
+            currentStandardPasswords = parsed;
         }
     }
 
@@ -488,7 +494,7 @@ function onActionChange() {
         if (stdInput) {
             stdInput.type = 'password';
             if (currentStandardPasswords && currentStandardPasswords.length > 0) {
-                stdInput.value = currentStandardPasswords[0];
+                stdInput.value = currentStandardPasswords.join(', ');
             }
         }
         const eyeBtn = document.getElementById('toggleStandardPasswordBtn');
@@ -781,7 +787,7 @@ async function loadTemplates() {
             if (data.standard_passwords && Array.isArray(data.standard_passwords) && data.standard_passwords.length > 0) {
                 currentStandardPasswords = data.standard_passwords;
                 const stdInput = document.getElementById('standardPasswordInput');
-                if (stdInput) stdInput.value = currentStandardPasswords[0];
+                if (stdInput) stdInput.value = currentStandardPasswords.join(', ');
             }
             const isAP = document.getElementById('tabAP').classList.contains('active');
             const portInput = document.getElementById('port');
@@ -1099,6 +1105,11 @@ async function checkForAppUpdate(silent = false) {
                 }
                 if (installBtn) installBtn.style.display = 'none';
                 if (notesText) notesText.innerText = '';
+                setTimeout(() => {
+                    if (banner && installBtn && installBtn.style.display === 'none') {
+                        banner.style.display = 'none';
+                    }
+                }, 3500);
             }
         }
     } catch (e) {
@@ -1114,6 +1125,11 @@ async function checkForAppUpdate(silent = false) {
             }
             if (installBtn) installBtn.style.display = 'none';
             if (notesText) notesText.innerText = '';
+            setTimeout(() => {
+                if (banner && installBtn && installBtn.style.display === 'none') {
+                    banner.style.display = 'none';
+                }
+            }, 3500);
         }
     } finally {
         if (btn) {

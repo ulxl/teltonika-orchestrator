@@ -1217,15 +1217,16 @@
 
                 <div class="form-group" id="standardPasswordGroup" style="display: none;">
                     <div class="form-label-row">
-                        <label>Target Standard Password</label>
-                        <span style="font-size: 11px; color: var(--text-secondary);">Enforced upon devices</span>
+                        <label>Standard Admin Passwords</label>
+                        <span style="font-size: 11px; color: var(--text-secondary);">Comma-separated (1st is target)</span>
                     </div>
                     <div class="password-toggle-wrapper">
-                        <input type="password" id="standardPasswordInput" placeholder="Enter standard password" spellcheck="false" style="font-family: var(--font-mono); font-size: 12.5px;" onchange="onStandardPasswordInputChange(this.value)">
+                        <input type="password" id="standardPasswordInput" placeholder="e.g. qwerty123, qwerty123!" spellcheck="false" style="font-family: var(--font-mono); font-size: 12.5px;" onchange="onStandardPasswordInputChange(this.value)">
                         <button type="button" class="password-toggle-btn" id="toggleStandardPasswordBtn" onclick="togglePasswordVisibility('standardPasswordInput', this)" title="Toggle visibility">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">First entry is the target password set on devices; others are recognized as compliant.</div>
                 </div>
 
                 <div class="form-group" id="macGroup" style="display: none;">

@@ -207,9 +207,15 @@ async fn start_job(
 
     let cfg = load_config();
     let mut standard_passwords = cfg.standard_passwords.clone();
-    if let Some(target_pwd) = standard_password_override {
-        standard_passwords.retain(|p| p != &target_pwd);
-        standard_passwords.insert(0, target_pwd);
+    if let Some(target_pwds_raw) = standard_password_override {
+        let parsed: Vec<String> = target_pwds_raw
+            .split(',')
+            .map(|p| p.trim().to_string())
+            .filter(|p| !p.is_empty())
+            .collect();
+        if !parsed.is_empty() {
+            standard_passwords = parsed;
+        }
     }
     if passwords.is_empty() {
         passwords = standard_passwords.clone();

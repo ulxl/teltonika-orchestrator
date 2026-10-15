@@ -1,20 +1,11 @@
 {
-  "active_template": "Admin",
+  "active_template": "Default",
   "templates": [
     {
       "name": "Default",
       "passwords": [
-        "MTMn1f4rr0",
-        "MTMn1f4rr0!",
-        "Admin123!",
-        "Admin123"
-      ]
-    },
-    {
-      "name": "MTM",
-      "passwords": [
-        "MTMn1f4rr0",
-        "MTMn1f4rr0!"
+        "qwerty123",
+        "qwerty123!"
       ]
     },
     {
@@ -32,7 +23,7 @@
   "results_dir": "D:\\Automation\\Teltonika\\rust-app\\results",
   "workspace_dir": "D:\\Automation\\Teltonika\\rust-app",
   "theme": "system",
-  "font_size": "compact",
+  "font_size": "normal",
   "font_family": "geist",
   "default_workers": 5,
   "is_first_run": false,
