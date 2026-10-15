@@ -20,8 +20,8 @@
     "qwerty123",
     "qwerty123!"
   ],
-  "results_dir": "D:\\Automation\\Teltonika\\rust-app\\results",
-  "workspace_dir": "D:\\Automation\\Teltonika\\rust-app",
+  "results_dir": "results",
+  "workspace_dir": "",
   "theme": "system",
   "font_size": "normal",
   "font_family": "geist",

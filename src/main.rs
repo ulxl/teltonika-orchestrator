@@ -47,7 +47,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let event_loop = EventLoopBuilder::new().build();
     let window = WindowBuilder::new()
-        .with_title("Teltonika Orchestrator v1.2.0")
+        .with_title("Teltonika Orchestrator v1.3.0")
         .with_inner_size(LogicalSize::new(1380.0, 860.0))
         .with_min_inner_size(LogicalSize::new(1024.0, 700.0))
         .build(&event_loop)?;

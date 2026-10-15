@@ -1,6 +1,6 @@
 [package]
 name = "teltonika-orchestrator"
-version = "1.2.0"
+version = "1.3.0"
 edition = "2024"
 authors = ["Hilmy <https://github.com/ulxl>"]
 description = "High-Performance Teltonika Fleet Automation Engine built with Rust, Tokio, Axum & Wry."

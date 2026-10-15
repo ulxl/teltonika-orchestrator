@@ -189,10 +189,12 @@ mod tests {
     #[test]
     fn test_version_parsing_and_comparison() {
         assert!(is_newer_version("1.1.0", "v1.2.0"));
+        assert!(is_newer_version("1.2.0", "v1.3.0"));
         assert!(is_newer_version("1.1.0", "1.1.1"));
         assert!(is_newer_version("1.1.0", "2.0.0"));
         assert!(!is_newer_version("1.1.0", "1.1.0"));
         assert!(!is_newer_version("1.1.0", "v1.1.0"));
         assert!(!is_newer_version("1.2.0", "v1.1.9"));
+        assert!(!is_newer_version("1.3.0", "v1.2.9"));
     }
 }

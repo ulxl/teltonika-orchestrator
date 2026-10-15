@@ -27,10 +27,10 @@ Teltonika Orchestrator combines the raw performance, concurrency, and memory saf
 
 ### 1. General Fleet Automation
 - **Data Extraction**: Pulls hardware identifiers, firmware versions, serial numbers, MAC addresses, and cellular parameters (IMEI, ICCID, IMSI, Operator, RSSI, RSRP, RSRQ, SINR).
-- **Password Standardization**: Validates and updates device administrative passwords across fleets to enforce security compliance.
+- **Password Standardization**: Validates and updates device administrative passwords across fleets. Supports multiple comma-separated standard passwords directly with secure dot-masking and visibility eye toggles.
 - **Backup & Restore**: Automatically downloads configuration archives (`.tar.gz`) or batch-deploys backup configuration packages.
 - **Firmware Upgrades**: Transfers firmware files over SCP/SSH and executes upgrade sequences with automated reboot tracking.
-- **Single-Click Reboot**: Instantly dispatches reboot signals to individual devices or batch selections.
+- **Single-Click Reboot**: Instantly dispatches reboot signals to individual devices or batch selections with confirmation safeguard.
 
 ### 2. Access Point (AP) Operations
 - **Wi-Fi Credential Audit**: Pulls SSIDs, radio configurations, and pre-shared keys across dual-band and multi-interface setups.
@@ -42,11 +42,13 @@ Teltonika Orchestrator combines the raw performance, concurrency, and memory saf
 - **RMS Reconnection Trigger**: Forces device re-registration with the Remote Management System (RMS).
 
 ### 4. User Experience & Desktop Features
-- **In-App Auto-Updates**: One-click update check and in-place executable replacement directly from GitHub Releases without manual re-downloading.
+- **In-App Auto-Updates**: One-click update check and in-place executable replacement directly from GitHub Releases with auto-dismissing status banners.
+- **Credential & Template Manager**: Store and edit password templates with masked credentials, visibility toggles, delete confirmation prompts, and unified button layouts.
+- **Clean Workspace Architecture**: Default setup wizard storing configuration, results, logs, and backups inside `Documents/teltonika-orchestrator`.
+- **Streamlined Dialog Modals**: Uniform dialog footers with consolidated actions and no redundant close buttons.
 - **Dark & Light Mode**: Automatic system preference detection with manual toggle.
 - **Real-Time Terminal Console**: Live streaming event logs with tag filtering (All, Info, Success, Warning, Error) and full-text search.
 - **Interactive Data Table**: Drag-to-resize columns, status pill badges, and one-click clipboard copying.
-- **Customizable Workspace**: Configurable output directories for logs, templates, and generated reports.
 
 ---
 
@@ -85,7 +87,7 @@ The application includes an in-place updater powered by GitHub Releases:
 
 ## Configuration & Credentials
 
-All configuration and custom templates are stored locally in the workspace directory under `config/templates.json`:
+All configuration and custom templates are stored locally in the workspace directory (by default `%USERPROFILE%/Documents/teltonika-orchestrator/config/templates.json`):
 - **Default Authentication Candidates**: `qwerty123`, `qwerty123!`.
 - **Default Ports**: `443` (Router & AP HTTPS), `22` (SSH / SCP). Fully customizable in the Settings modal.
 - Passwords and device IP inputs are stored locally on your machine and never transmitted to external services.
