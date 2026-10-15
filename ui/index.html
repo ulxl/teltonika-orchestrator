@@ -1347,14 +1347,10 @@
         <div class="modal">
             <div class="modal-title">
                 <span>Manage Password Templates</span>
-                <button class="btn-sm btn-secondary modal-close-btn" onclick="closeTemplateModal()" aria-label="Close"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div class="template-list" id="templateList"></div>
             <div style="border-top: 1px solid var(--border-color); padding-top: 14px; display: flex; flex-direction: column; gap: 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <label id="templateFormTitle">Add New Template</label>
-                    <button type="button" id="cancelEditTemplateBtn" class="btn-link" style="display: none; font-size: 11px;" onclick="cancelTemplateEdit()">Cancel Edit</button>
-                </div>
+                <label id="templateFormTitle">Add New Template</label>
                 <div class="flex-row" style="align-items: center;">
                     <input type="text" id="newTemplateName" placeholder="Template Name (e.g. Lab)" style="flex: 1;" onkeydown="if(event.key==='Enter') saveOrUpdateTemplate()">
                     <div class="password-toggle-wrapper" style="flex: 2;">
@@ -1363,11 +1359,12 @@
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
-                    <button class="btn btn-sm" id="templateSubmitBtn" onclick="saveOrUpdateTemplate()">Add</button>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
-                <button class="btn btn-secondary btn-sm" onclick="closeTemplateModal()">Close</button>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <button type="button" id="cancelEditTemplateBtn" class="btn btn-secondary btn-sm" style="display: none;" onclick="cancelTemplateEdit()">Cancel Edit</button>
+                <button type="button" class="btn btn-sm" id="templateSubmitBtn" onclick="saveOrUpdateTemplate()">Add Template</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeTemplateModal()">Close</button>
             </div>
         </div>
     </div>
@@ -1376,7 +1373,6 @@
         <div class="modal">
             <div class="modal-title">
                 <span>Preferences & Settings</span>
-                <button class="btn-sm btn-secondary modal-close-btn" onclick="closeSettingsModal()" aria-label="Close"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div class="form-group" style="margin-bottom: 0;">
@@ -1428,7 +1424,7 @@
                         <button type="button" class="btn-link" onclick="openWorkspaceFolder()">Open Folder</button>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <input type="text" id="settingsWorkspaceDir" placeholder="e.g. C:\Users\Username\Documents\Teltonika" spellcheck="false" onchange="changeWorkspaceDir(this.value)" style="flex: 1; font-family: var(--font-mono); font-size: 12px;">
+                        <input type="text" id="settingsWorkspaceDir" placeholder="e.g. C:\Users\Username\Documents\teltonika-orchestrator" spellcheck="false" onchange="changeWorkspaceDir(this.value)" style="flex: 1; font-family: var(--font-mono); font-size: 12px;">
                         <button type="button" class="btn btn-secondary btn-sm" onclick="browseFolderFor('settingsWorkspaceDir')" title="Browse Folder">Browse</button>
                         <button type="button" class="btn btn-secondary btn-sm modal-close-btn" onclick="openWorkspaceFolder()" title="Open in File Explorer"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></button>
                     </div>
@@ -1500,7 +1496,7 @@
                     <label style="font-weight: 700; color: var(--text-primary);">Workspace Folder</label>
                     <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 6px;">Select an existing folder or click Browse to choose or create a new folder:</div>
                     <div style="display: flex; gap: 8px;">
-                        <input type="text" id="firstRunWorkspaceDir" style="flex: 1; font-family: var(--font-mono); font-size: 12px;" spellcheck="false" placeholder="e.g. C:\Users\Username\Documents\Teltonika">
+                        <input type="text" id="firstRunWorkspaceDir" style="flex: 1; font-family: var(--font-mono); font-size: 12px;" spellcheck="false" placeholder="e.g. C:\Users\Username\Documents\teltonika-orchestrator">
                         <button type="button" class="btn btn-secondary btn-sm" onclick="browseFolderFor('firstRunWorkspaceDir')">Browse...</button>
                     </div>
                 </div>
@@ -1534,7 +1530,6 @@
         <div class="modal" style="width: 440px;">
             <div class="modal-title">
                 <span>Confirm Device Reboot</span>
-                <button class="btn-sm btn-secondary modal-close-btn" onclick="closeRebootConfirmModal()" aria-label="Close"><svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div style="margin-top: 12px; font-size: 13.5px; color: var(--text-primary); line-height: 1.5;">
                 Are you sure you want to reboot device <strong id="rebootTargetIpDisplay" style="font-family: var(--font-mono); color: var(--accent-primary);"></strong>?

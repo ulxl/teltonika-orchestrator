@@ -917,7 +917,7 @@ function editTemplate(name) {
     const title = document.getElementById('templateFormTitle');
     if (title) title.textContent = `Edit Template: ${t.name}`;
     const submitBtn = document.getElementById('templateSubmitBtn');
-    if (submitBtn) submitBtn.textContent = 'Save';
+    if (submitBtn) submitBtn.textContent = 'Save Changes';
     const cancelBtn = document.getElementById('cancelEditTemplateBtn');
     if (cancelBtn) cancelBtn.style.display = 'inline-block';
 }
@@ -938,7 +938,7 @@ function cancelTemplateEdit() {
     const title = document.getElementById('templateFormTitle');
     if (title) title.textContent = 'Add New Template';
     const submitBtn = document.getElementById('templateSubmitBtn');
-    if (submitBtn) submitBtn.textContent = 'Add';
+    if (submitBtn) submitBtn.textContent = 'Add Template';
     const cancelBtn = document.getElementById('cancelEditTemplateBtn');
     if (cancelBtn) cancelBtn.style.display = 'none';
 }

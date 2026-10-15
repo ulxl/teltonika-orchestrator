@@ -142,8 +142,8 @@ pub fn load_config() -> AppConfig {
         }
     }
 
-    let user_profile = std::env::var("USERPROFILE").unwrap_or_else(|_| "C:\\Teltonika".to_string());
-    let suggested_ws = Path::new(&user_profile).join("Documents").join("Teltonika").to_string_lossy().to_string();
+    let user_profile = std::env::var("USERPROFILE").unwrap_or_else(|_| "C:\\teltonika-orchestrator".to_string());
+    let suggested_ws = Path::new(&user_profile).join("Documents").join("teltonika-orchestrator").to_string_lossy().to_string();
 
     let mut default_cfg = AppConfig::default();
     if let Ok(local_content) = fs::read_to_string("config/templates.json") {
@@ -166,8 +166,8 @@ pub fn save_config(cfg: &AppConfig) -> Result<(), std::io::Error> {
     } else if let Some(dir) = get_workspace_dir() {
         dir
     } else {
-        let user_profile = std::env::var("USERPROFILE").unwrap_or_else(|_| "C:\\Teltonika".to_string());
-        Path::new(&user_profile).join("Documents").join("Teltonika")
+        let user_profile = std::env::var("USERPROFILE").unwrap_or_else(|_| "C:\\teltonika-orchestrator".to_string());
+        Path::new(&user_profile).join("Documents").join("teltonika-orchestrator")
     };
 
     let config_dir = ws.join("config");
