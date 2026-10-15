@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teltonika Orchestrator v1.1.0</title>
+    <title>Teltonika Orchestrator v1.2.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
@@ -1203,7 +1203,7 @@
                     </div>
                     <div class="form-group port-group" id="portGroup">
                         <label id="portLabel">Port</label>
-                        <input type="number" id="port" value="8443" min="1" max="65535">
+                        <input type="number" id="port" value="443" min="1" max="65535">
                     </div>
                     <div class="form-group worker-group">
                         <label>Workers</label>
@@ -1355,6 +1355,20 @@
                     <label>Default Worker Threads</label>
                     <input type="number" id="settingsDefaultWorkers" min="1" max="50" value="5" onchange="changeDefaultWorkers(this.value)">
                 </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Router Port</label>
+                        <input type="number" id="settingsRouterPort" min="1" max="65535" value="443" onchange="changeDefaultPorts()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>AP Port</label>
+                        <input type="number" id="settingsApPort" min="1" max="65535" value="443" onchange="changeDefaultPorts()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>SSH Port</label>
+                        <input type="number" id="settingsSshPort" min="1" max="65535" value="22" onchange="changeDefaultPorts()">
+                    </div>
+                </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <div class="form-label-row">
                         <label>Workspace Directory</label>
@@ -1371,7 +1385,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="font-weight: 800; font-size: 13.5px; color: var(--text-primary);">Teltonika Orchestrator</span>
-                            <span class="version-badge" id="appVersionBadge">v1.1.0</span>
+                            <span class="version-badge" id="appVersionBadge">v1.2.0</span>
                         </div>
                         <button type="button" class="btn btn-secondary btn-sm" id="btnCheckUpdate" onclick="checkForAppUpdate(false)" style="font-size: 11px; padding: 2px 10px; height: 26px;">Check for Updates</button>
                     </div>

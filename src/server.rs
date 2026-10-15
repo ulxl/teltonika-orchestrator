@@ -92,7 +92,7 @@ async fn start_job(
     let mut passwords_raw = String::new();
     let mut mac_raw = String::new();
     let mut username = "admin".to_string();
-    let mut port = "8443".to_string();
+    let mut port = "443".to_string();
     let mut workers = 5usize;
     let mut is_retry = false;
     let mut firmware_path_opt: Option<String> = None;
@@ -145,8 +145,8 @@ async fn start_job(
         if username.trim().is_empty() || username == "admin" {
             username = "root".to_string();
         }
-        if port.trim().is_empty() || port == "8443" {
-            port = "822".to_string();
+        if port.trim().is_empty() || port == "443" || port == "8443" {
+            port = "22".to_string();
         }
         if firmware_path_opt.is_none() && std::path::Path::new("results/firmware_upload.bin").exists() {
             firmware_path_opt = Some("results/firmware_upload.bin".to_string());
@@ -435,7 +435,7 @@ async fn reboot_single_endpoint(
     }
 
     let username = payload.username.unwrap_or_else(|| "admin".to_string());
-    let port = payload.port.unwrap_or_else(|| "8443".to_string());
+    let port = payload.port.unwrap_or_else(|| "443".to_string());
 
     let cfg = load_config();
     let mut candidate_passwords = Vec::new();

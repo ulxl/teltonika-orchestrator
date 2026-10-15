@@ -4,24 +4,8 @@
     {
       "name": "Default",
       "passwords": [
-        "MTMn1f4rr0",
-        "MTMn1f4rr0!",
         "Admin123!",
         "Admin123"
-      ]
-    },
-    {
-      "name": "MTM",
-      "passwords": [
-        "MTMn1f4rr0",
-        "MTMn1f4rr0!"
-      ]
-    },
-    {
-      "name": "Admin",
-      "passwords": [
-        "Admin123",
-        "Admin123!"
       ]
     }
   ],
@@ -29,12 +13,15 @@
     "Admin123!",
     "Admin123"
   ],
-  "results_dir": "D:\\Automation\\Teltonika\\rust-app\\results",
-  "workspace_dir": "D:\\Automation\\Teltonika\\rust-app",
+  "results_dir": "results",
+  "workspace_dir": "",
   "theme": "system",
   "font_size": "normal",
   "font_family": "geist",
   "default_workers": 5,
+  "default_router_port": 443,
+  "default_ap_port": 443,
+  "default_ssh_port": 22,
   "is_first_run": false,
   "suggested_workspace_dir": ""
 }

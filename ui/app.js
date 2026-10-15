@@ -123,6 +123,14 @@ function initSettings() {
             const wsInput = document.getElementById('settingsWorkspaceDir');
             if (wsInput) wsInput.value = savedWorkspaceDir;
         }
+
+        const rPort = localStorage.getItem('teltonika_default_router_port') || '443';
+        const apPort = localStorage.getItem('teltonika_default_ap_port') || '443';
+        const sshPort = localStorage.getItem('teltonika_default_ssh_port') || '22';
+        if (document.getElementById('settingsRouterPort')) document.getElementById('settingsRouterPort').value = rPort;
+        if (document.getElementById('settingsApPort')) document.getElementById('settingsApPort').value = apPort;
+        if (document.getElementById('settingsSshPort')) document.getElementById('settingsSshPort').value = sshPort;
+        if (document.getElementById('port')) document.getElementById('port').value = rPort;
     } catch (_) {}
 }
 
@@ -212,6 +220,53 @@ function changeDefaultWorkers(val, persist = true) {
     }
 }
 
+function getSavedRouterPort() {
+    const el = document.getElementById('settingsRouterPort');
+    if (el && el.value) return el.value;
+    try {
+        const p = localStorage.getItem('teltonika_default_router_port');
+        if (p) return p;
+    } catch (_) {}
+    return '443';
+}
+
+function getSavedApPort() {
+    const el = document.getElementById('settingsApPort');
+    if (el && el.value) return el.value;
+    try {
+        const p = localStorage.getItem('teltonika_default_ap_port');
+        if (p) return p;
+    } catch (_) {}
+    return '443';
+}
+
+function getSavedSshPort() {
+    const el = document.getElementById('settingsSshPort');
+    if (el && el.value) return el.value;
+    try {
+        const p = localStorage.getItem('teltonika_default_ssh_port');
+        if (p) return p;
+    } catch (_) {}
+    return '22';
+}
+
+function changeDefaultPorts() {
+    const rPort = getSavedRouterPort();
+    const apPort = getSavedApPort();
+    const sshPort = getSavedSshPort();
+    try {
+        localStorage.setItem('teltonika_default_router_port', rPort);
+        localStorage.setItem('teltonika_default_ap_port', apPort);
+        localStorage.setItem('teltonika_default_ssh_port', sshPort);
+    } catch (_) {}
+    const isAP = document.getElementById('tabAP').classList.contains('active');
+    const portInput = document.getElementById('port');
+    if (portInput) {
+        portInput.value = isAP ? apPort : rPort;
+    }
+    saveCurrentConfig();
+}
+
 async function saveCurrentConfig() {
     const themeSelect = document.getElementById('settingsThemeSelect');
     const theme = themeSelect ? themeSelect.value : (document.body.classList.contains('dark-mode') ? 'dark' : 'light');
@@ -225,12 +280,19 @@ async function saveCurrentConfig() {
     const wsDir = wsDirInput ? (wsDirInput.value.trim() || currentWorkspaceDir) : currentWorkspaceDir;
     currentWorkspaceDir = wsDir;
 
+    const routerPort = parseInt(getSavedRouterPort()) || 443;
+    const apPort = parseInt(getSavedApPort()) || 443;
+    const sshPort = parseInt(getSavedSshPort()) || 22;
+
     try {
         localStorage.setItem('teltonika_theme_pref', theme);
         localStorage.setItem('teltonika_font_family', fontFamily);
         localStorage.setItem('teltonika_font_size', fontSize);
         localStorage.setItem('teltonika_default_workers', workers);
         localStorage.setItem('teltonika_workspace_dir', wsDir);
+        localStorage.setItem('teltonika_default_router_port', routerPort);
+        localStorage.setItem('teltonika_default_ap_port', apPort);
+        localStorage.setItem('teltonika_default_ssh_port', sshPort);
     } catch (_) {}
 
     try {
@@ -245,7 +307,10 @@ async function saveCurrentConfig() {
                 theme: theme,
                 font_family: fontFamily,
                 font_size: fontSize,
-                default_workers: workers
+                default_workers: workers,
+                default_router_port: routerPort,
+                default_ap_port: apPort,
+                default_ssh_port: sshPort
             })
         });
     } catch (_) {}
@@ -319,19 +384,19 @@ function switchCategory(cat) {
 
     if (cat === 'general') {
         select.value = 'verify';
-        portInput.value = '8443';
+        portInput.value = getSavedRouterPort();
         portInput.readOnly = false;
         portInput.style.opacity = '1';
     } else if (cat === 'router') {
         select.value = 'extract_data';
-        portInput.value = '8443';
+        portInput.value = getSavedRouterPort();
         portInput.readOnly = false;
         portInput.style.opacity = '1';
     } else if (cat === 'ap') {
         select.value = 'check_wifi';
-        portInput.value = '6443';
-        portInput.readOnly = true;
-        portInput.style.opacity = '0.6';
+        portInput.value = getSavedApPort();
+        portInput.readOnly = false;
+        portInput.style.opacity = '1';
     }
 
     document.getElementById('deviceType').value = cat === 'ap' ? 'ap' : 'router';
@@ -350,19 +415,23 @@ function onActionChange() {
 
     if (isFirmware) {
         userInput.value = 'root';
-        portInput.value = '822';
+        portInput.value = getSavedSshPort();
         portInput.readOnly = false;
         portInput.style.opacity = '1';
     } else {
         const cat = document.getElementById('tabAP').classList.contains('active') ? 'ap' : (document.getElementById('tabRouter').classList.contains('active') ? 'router' : 'general');
         if (cat === 'ap') {
             userInput.value = 'admin';
-            portInput.value = '6443';
-            portInput.readOnly = true;
-            portInput.style.opacity = '0.6';
+            if (portInput.value === getSavedSshPort() || portInput.value === '822' || portInput.value === '22') {
+                portInput.value = getSavedApPort();
+            }
+            portInput.readOnly = false;
+            portInput.style.opacity = '1';
         } else {
             if (userInput.value === 'root') userInput.value = 'admin';
-            if (portInput.value === '822') portInput.value = '8443';
+            if (portInput.value === getSavedSshPort() || portInput.value === '822' || portInput.value === '22') {
+                portInput.value = getSavedRouterPort();
+            }
             portInput.readOnly = false;
             portInput.style.opacity = '1';
         }
@@ -641,6 +710,26 @@ async function loadTemplates() {
                 try {
                     localStorage.setItem('teltonika_default_workers', data.default_workers);
                 } catch (_) {}
+            }
+            if (data.default_router_port) {
+                const el = document.getElementById('settingsRouterPort');
+                if (el) el.value = data.default_router_port;
+                try { localStorage.setItem('teltonika_default_router_port', data.default_router_port); } catch (_) {}
+            }
+            if (data.default_ap_port) {
+                const el = document.getElementById('settingsApPort');
+                if (el) el.value = data.default_ap_port;
+                try { localStorage.setItem('teltonika_default_ap_port', data.default_ap_port); } catch (_) {}
+            }
+            if (data.default_ssh_port) {
+                const el = document.getElementById('settingsSshPort');
+                if (el) el.value = data.default_ssh_port;
+                try { localStorage.setItem('teltonika_default_ssh_port', data.default_ssh_port); } catch (_) {}
+            }
+            const isAP = document.getElementById('tabAP').classList.contains('active');
+            const portInput = document.getElementById('port');
+            if (portInput) {
+                portInput.value = isAP ? getSavedApPort() : getSavedRouterPort();
             }
             renderTemplateSelect(data.active_template);
             if (data.is_first_run) {
@@ -1105,7 +1194,7 @@ function prepareTableRows(ips) {
         const tr = document.createElement('tr');
         tr.id = `row_${idx}_${item.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
         tr.setAttribute('data-ip', item);
-        const itemPort = item.includes(':') ? item.split(':')[1] : (document.getElementById('port')?.value || '8443');
+        const itemPort = item.includes(':') ? item.split(':')[1] : (document.getElementById('port')?.value || getSavedRouterPort());
         tr.setAttribute('data-port', itemPort);
         tr.setAttribute('data-status', 'Pending');
         let dashes = '';
@@ -1989,7 +2078,7 @@ function promptRebootDevice(ip, clickedEl) {
     const row = clickedEl ? clickedEl.closest('tr') : Array.from(document.querySelectorAll('#resultsBody tr[data-ip]')).find(r => r.getAttribute('data-ip') === ip);
     const rowPort = row ? row.getAttribute('data-port') : null;
     const explicitPort = ip.includes(':') ? ip.split(':')[1] : null;
-    const activePort = explicitPort || rowPort || document.getElementById('port')?.value || '8443';
+    const activePort = explicitPort || rowPort || document.getElementById('port')?.value || getSavedRouterPort();
     targetRebootPort = activePort;
 
     const ipDisplay = document.getElementById('rebootTargetIpDisplay');
@@ -2008,7 +2097,7 @@ function closeRebootConfirmModal() {
 async function executeRebootDevice() {
     if (!targetRebootIp) return;
     const ipToReboot = targetRebootIp;
-    const portToReboot = targetRebootPort || document.getElementById('port')?.value || '8443';
+    const portToReboot = targetRebootPort || document.getElementById('port')?.value || getSavedRouterPort();
     const btn = document.getElementById('confirmRebootActionBtn');
     if (btn) {
         btn.disabled = true;

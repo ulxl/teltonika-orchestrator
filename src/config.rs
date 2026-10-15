@@ -29,6 +29,12 @@ pub struct AppConfig {
     pub is_first_run: bool,
     #[serde(default)]
     pub suggested_workspace_dir: String,
+    #[serde(default = "default_port_443")]
+    pub default_router_port: u16,
+    #[serde(default = "default_port_443")]
+    pub default_ap_port: u16,
+    #[serde(default = "default_port_22")]
+    pub default_ssh_port: u16,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,6 +62,14 @@ fn default_workers() -> usize {
     5
 }
 
+fn default_port_443() -> u16 {
+    443
+}
+
+fn default_port_22() -> u16 {
+    22
+}
+
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
@@ -78,6 +92,9 @@ impl Default for AppConfig {
             default_workers: 5,
             is_first_run: false,
             suggested_workspace_dir: String::new(),
+            default_router_port: 443,
+            default_ap_port: 443,
+            default_ssh_port: 22,
         }
     }
 }

@@ -560,7 +560,7 @@ pub async fn execute_device_task(
     };
 
     let port_to_use = explicit_port.unwrap_or_else(|| params.port.clone());
-    let port_num = port_to_use.parse::<u16>().unwrap_or(8443);
+    let port_num = port_to_use.parse::<u16>().unwrap_or(443);
     let mut base_url = format!("https://{}:{}", host, port_to_use);
 
     let is_bundle = params.mode == "bundle_check" || params.mode == "reconnect_rms_bundle";
@@ -589,6 +589,9 @@ pub async fn execute_device_task(
     if !port_active && !is_bundle {
         if is_port_open(&host, 443, 500).await {
             base_url = format!("https://{}:443", host);
+            port_active = true;
+        } else if is_port_open(&host, 8443, 500).await {
+            base_url = format!("https://{}:8443", host);
             port_active = true;
         } else if is_port_open(&host, 80, 500).await {
             base_url = format!("http://{}:80", host);
@@ -1741,7 +1744,7 @@ pub async fn reboot_device_direct(
     };
 
     let port_to_use = explicit_port.unwrap_or_else(|| default_port.to_string());
-    let port_num = port_to_use.parse::<u16>().unwrap_or(8443);
+    let port_num = port_to_use.parse::<u16>().unwrap_or(443);
     let mut base_url = if port_num == 80 {
         format!("http://{}:80", host)
     } else {
@@ -1752,6 +1755,9 @@ pub async fn reboot_device_direct(
     if !port_active {
         if is_port_open(&host, 443, 1000).await {
             base_url = format!("https://{}:443", host);
+            port_active = true;
+        } else if is_port_open(&host, 8443, 1000).await {
+            base_url = format!("https://{}:8443", host);
             port_active = true;
         } else if is_port_open(&host, 80, 1000).await {
             base_url = format!("http://{}:80", host);

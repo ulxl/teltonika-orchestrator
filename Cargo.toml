@@ -1,6 +1,6 @@
 [package]
 name = "rust-app"
-version = "1.1.0"
+version = "1.2.0"
 edition = "2024"
 authors = ["Hilmy <https://github.com/ulxl>"]
 description = "High-Performance Teltonika Fleet Automation Engine built with Rust, Tokio, Axum & Wry."
